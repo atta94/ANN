@@ -1,0 +1,31 @@
+import numpy as np # linear algebra
+from sklearn import metrics
+from sklearn.linear_model import Perceptron
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+corpus = [
+    'We enjoy our stay so much. The weather ws not great, but everything was perfect.',
+    'The perfect place to relax and recharge,',
+    'Never had such a relaxing vacation.',
+    'Not that mindblowing',
+    'Had worse experiences',
+    'The pictures looked way different.',
+    'Everyone was nice. had a good time.'
+]
+targets = [1,1,1,0,0,0,1]
+
+train_features, test_features, train_targets, test_targets = train_test_split(corpus, targets, test_size = 0.1,random_state = 123)
+    
+vectorizer = TfidfVectorizer(stop_words = 'english', lowercase = True, norm = 'l1')
+    
+train_features = vectorizer.fit_transform(train_features)
+    
+test_features = vectorizer.transform(test_features)
+    
+classifier = Perceptron(random_state = 457)
+classifier.fit(train_features, train_targets)
+    
+predictions = classifier.predict(test_features)
+score = np.round(metrics.accuracy_score(test_targets,predictions),2)
+print("Mean accuracy of Predictions:" + str(score))
